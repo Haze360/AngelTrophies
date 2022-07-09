@@ -121,7 +121,7 @@ public class TrophyManager implements Listener {
         System.out.println("block being placed?");
 
         yaw = Math.round(yaw / 90) * 90;
-        ArmorStand back = CouchUtil.getRelative(block, yaw, group);
+        ArmorStand back = (ArmorStand) CouchUtil.getRelative(block, yaw, group);
         yaw += 90;
         Entity right = CouchUtil.getRelative(block, yaw, group);
         yaw += 90;
@@ -129,6 +129,8 @@ public class TrophyManager implements Listener {
         yaw += 90;
         Entity left = CouchUtil.getRelative(block, yaw, group);
         System.out.println("Directions Checked");
+
+        HashMap Trophies = CouchUtil.trophies;
 
         if(back != null){
             back.getEquipment().setHelmet(itemStack);
@@ -141,7 +143,7 @@ public class TrophyManager implements Listener {
 
 
         if (trophyPlace.place(player, block, face, event.getHand(), item) != null) {
-            justPlacedTrophy1.put(player.getUniqueId(), player.getTicksLived());
+            justPlacedTrophy.put(player.getUniqueId(), player.getTicksLived());
         }
     }
 
