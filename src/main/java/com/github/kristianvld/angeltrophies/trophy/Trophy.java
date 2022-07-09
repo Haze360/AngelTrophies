@@ -140,6 +140,35 @@ public class Trophy {
         return stand;
     }
 
+    public ArmorStand place(Player player, Block block, BlockFace face, EquipmentSlot hand, ItemStack item) {
+        Vector offset;
+        boolean small;
+        float yaw;
+        boolean placeSlab = false;
+        if (face == BlockFace.DOWN && floor) {
+            offset = face.getDirection().multiply(-floorOffset);
+            small = floorSmall;
+            yaw = 180 + Math.round(player.getLocation().getYaw() / floorRotationResolution) * floorRotationResolution;
+            placeSlab = floorPlaceSlab;
+        } else if (wall && (face == BlockFace.EAST || face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.WEST)) {
+            offset = face.getDirection().multiply(wallOffset);
+            small = wallSmall;
+            yaw = (float) Math.toDegrees(face.getDirection().angle(BlockFace.SOUTH.getDirection()));
+        } else {
+            return null;
+        }
+        ItemStack trophy = item.clone();
+        trophy.setAmount(1);
+        ArmorStand stand = place(player.getUniqueId(), trophy, block, small, face, yaw, offset, placeSlab);
+        if (stand != null) {
+            item = player.getEquipment().getItem(hand);
+            item.setAmount(item.getAmount() - 1);
+            item = item.getAmount() > 0 ? item : null;
+            player.getEquipment().setItem(hand, item);
+        }
+        return stand;
+    }
+
     public boolean matches(ItemStack item) {
         return itemName.equals(OraxenItems.getIdByItem(item));
     }
@@ -219,35 +248,6 @@ public class Trophy {
             return trophy.getPersistentDataContainer().get(COUCH_GROUP, UUIDTagType.STRING);
         }
         return null;
-    }
-
-    public ArmorStand place(Player player, Block block, BlockFace face, EquipmentSlot hand, ItemStack item) {
-        Vector offset;
-        boolean small;
-        float yaw;
-        boolean placeSlab = false;
-        if (face == BlockFace.DOWN && floor) {
-            offset = face.getDirection().multiply(-floorOffset);
-            small = floorSmall;
-            yaw = 180 + Math.round(player.getLocation().getYaw() / floorRotationResolution) * floorRotationResolution;
-            placeSlab = floorPlaceSlab;
-        } else if (wall && (face == BlockFace.EAST || face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.WEST)) {
-            offset = face.getDirection().multiply(wallOffset);
-            small = wallSmall;
-            yaw = (float) Math.toDegrees(face.getDirection().angle(BlockFace.SOUTH.getDirection()));
-        } else {
-            return null;
-        }
-        ItemStack trophy = item.clone();
-        trophy.setAmount(1);
-        ArmorStand stand = place(player.getUniqueId(), trophy, block, small, face, yaw, offset, placeSlab);
-        if (stand != null) {
-            item = player.getEquipment().getItem(hand);
-            item.setAmount(item.getAmount() - 1);
-            item = item.getAmount() > 0 ? item : null;
-            player.getEquipment().setItem(hand, item);
-        }
-        return stand;
     }
 
     public static boolean pickup(Player player, Entity entity) {

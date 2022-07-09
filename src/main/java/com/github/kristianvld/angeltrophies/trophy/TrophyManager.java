@@ -122,15 +122,17 @@ public class TrophyManager implements Listener {
 
         yaw = Math.round(yaw / 90) * 90;
         ArmorStand back = (ArmorStand) CouchUtil.getRelative(block, yaw, group);
-        yaw += 90;
-        Entity right = CouchUtil.getRelative(block, yaw, group);
-        yaw += 90;
-        Entity forward = CouchUtil.getRelative(block, yaw, group);
-        yaw += 90;
-        Entity left = CouchUtil.getRelative(block, yaw, group);
+        Trophy trophyback = CouchUtil.getTrophy(trophy,block,yaw);
+        back.remove();
+        ItemStack backitem = trophyback.getExampleItem();
+        trophyback.place(player.getUniqueId(),block,back.isSmall(),yaw,,trophyback..)
+        Entity right = CouchUtil.getRelative(block, yaw + 90, group);
+        Trophy trophyright = CouchUtil.getTrophy(trophy,block,yaw + 90);
+        Entity forward = CouchUtil.getRelative(block, yaw + 180, group);
+        Trophy trophyfront = CouchUtil.getTrophy(trophy,block,yaw + 180);
+        Entity left = CouchUtil.getRelative(block, yaw + 270, group);
+        Trophy trophyleft = CouchUtil.getTrophy(trophy,block,yaw + 270);
         System.out.println("Directions Checked");
-
-        HashMap Trophies = CouchUtil.trophies;
 
         if(back != null){
             back.getEquipment().setHelmet(itemStack);
