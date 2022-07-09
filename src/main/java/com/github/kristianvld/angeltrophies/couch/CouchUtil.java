@@ -66,6 +66,18 @@ public class CouchUtil {
         }
         String group = trophy.getCouchGroup();
 
+        CouchRole role = getRole(block, yaw, group);
+
+        if (role == CouchRole.Single) {
+            return trophy;
+        }
+        return trophies.get(new Pair(group, role));
+    }
+
+    public static CouchRole getRole(Block block, float yaw, String group){
+
+        CouchRole role = CouchRole.Single;
+
         yaw = Math.round(yaw / 90) * 90;
         Entity back = getRelative(block, yaw, group);
         yaw += 90;
@@ -75,8 +87,6 @@ public class CouchUtil {
         yaw += 90;
         Entity left = getRelative(block, yaw, group);
         System.out.println("Directions Checked");
-
-        CouchRole role = CouchRole.Single;
 
         if (right != null) {
             System.out.println("right is not null");
@@ -102,11 +112,7 @@ public class CouchUtil {
                 role = CouchRole.RightEnd;
             }
         }
-
-        if (role == CouchRole.Single) {
-            return trophy;
-        }
-        return trophies.get(new Pair(group, role));
+        return role;
     }
 
 }
