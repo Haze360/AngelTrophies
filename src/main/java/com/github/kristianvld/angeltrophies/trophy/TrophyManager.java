@@ -32,6 +32,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.spigotmc.event.entity.EntityDismountEvent;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ArmorStand;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,24 +68,36 @@ public class TrophyManager implements Listener {
         return null;
     }
 
+
+
     @EventHandler(priority = EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event) {
+        System.out.println("onInteract Event has Fired!");
+
+        //get the palyer object from thew event
         Player player = event.getPlayer();
+
+        //if the event was not right-click-Block or, the block clicked was null or, the player is not sneaking. Go no further.
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null || !player.isSneaking()) {
             return;
         }
 
+        /***
+         * @TODO figure out what this if-statement does.
+         */
         if (justPlacedTrophy.getOrDefault(player.getUniqueId(), 0) == player.getTicksLived()) {
             event.setUseInteractedBlock(Event.Result.DENY);
             event.setUseItemInHand(Event.Result.DENY);
             return;
         }
 
+        //if the player has an item in their off-hand. Go no further.
         EquipmentSlot otherHand = event.getHand() == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
         if (getTrophy(player.getEquipment().getItem(otherHand)) != null) {
             return;
         }
 
+        //
         ItemStack item = event.getItem();
         Trophy trophy = getTrophy(item);
         if (trophy == null) {
@@ -99,13 +114,34 @@ public class TrophyManager implements Listener {
         event.setUseItemInHand(Event.Result.DENY);
         BlockFace face = event.getBlockFace().getOppositeFace();
 
-        Trophy trophyPlace = CouchUtil.getTrophy(trophy, block, player.getLocation().getYaw());
+        float yaw = player.getLocation().getYaw();
+        String group = trophy.getCouchGroup();
+
+        Trophy trophyPlace = CouchUtil.getTrophy(trophy, block, yaw);
+        System.out.println("block being placed?");
+
+        yaw = Math.round(yaw / 90) * 90;
+        ArmorStand back = CouchUtil.getRelative(block, yaw, group);
+        yaw += 90;
+        Entity right = CouchUtil.getRelative(block, yaw, group);
+        yaw += 90;
+        Entity forward = CouchUtil.getRelative(block, yaw, group);
+        yaw += 90;
+        Entity left = CouchUtil.getRelative(block, yaw, group);
+        System.out.println("Directions Checked");
+
+        if(back != null){
+            back.getEquipment().setHelmet(itemStack);
+        }
+
         if (trophyPlace != trophy) {
             item = trophyPlace.getExampleItem();
         }
 
+
+
         if (trophyPlace.place(player, block, face, event.getHand(), item) != null) {
-            justPlacedTrophy.put(player.getUniqueId(), player.getTicksLived());
+            justPlacedTrophy1.put(player.getUniqueId(), player.getTicksLived());
         }
     }
 

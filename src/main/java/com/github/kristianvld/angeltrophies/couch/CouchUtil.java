@@ -50,7 +50,7 @@ public class CouchUtil {
         return new BlockVector(x, 0, z);
     }
 
-    private static Entity getRelative(Block block, float yaw, String group) {
+    public static Entity getRelative(Block block, float yaw, String group) {
         BlockVector dir = yawToVector(yaw);
         Entity trophy = Trophy.getTrophy(block.getRelative(dir.getBlockX(), 0, dir.getBlockZ()));
         String id = Trophy.getCouchGroupID(trophy);
@@ -74,10 +74,12 @@ public class CouchUtil {
         Entity forward = getRelative(block, yaw, group);
         yaw += 90;
         Entity left = getRelative(block, yaw, group);
+        System.out.println("Directions Checked");
 
         CouchRole role = CouchRole.Single;
 
         if (right != null) {
+            System.out.println("right is not null");
             if (trophies.containsKey(new Pair(group, CouchRole.LeftEnd))) {
                 role = CouchRole.LeftEnd;
             }
@@ -95,6 +97,7 @@ public class CouchUtil {
                 }
             }
         } else if (left != null) {
+            System.out.println("Left is not null");
             if (trophies.containsKey(new Pair(group, CouchRole.RightEnd))) {
                 role = CouchRole.RightEnd;
             }
