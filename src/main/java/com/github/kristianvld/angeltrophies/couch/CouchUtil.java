@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class CouchUtil {
 
-    private static final Map<Pair<String, CouchRole>, Trophy> trophies = new HashMap<>();
+    public static final Map<Pair<String, CouchRole>, Trophy> trophies = new HashMap<>();
 
     public static void buildCache(Collection<Trophy> trophies) {
         CouchUtil.trophies.clear();
@@ -44,6 +44,20 @@ public class CouchUtil {
         return trophies.get(new Pair(couchGroup, couchRole));
     }
 
+    public static Trophy getTrophy(Trophy trophy, Block block, float yaw) {
+        if (trophy.getCouchRole() == null) {
+            return trophy;
+        }
+        String group = trophy.getCouchGroup();
+
+        CouchRole role = getRole(block, yaw, group);
+
+        if (role == CouchRole.Single) {
+            return trophy;
+        }
+        return getTrophy(group, role);
+    }
+
     private static BlockVector yawToVector(float yaw) {
         int x = (int) Math.round(-1 * Math.sin(Math.toRadians(yaw)));
         int z = (int) Math.round(1 * Math.cos(Math.toRadians(yaw)));
@@ -58,20 +72,6 @@ public class CouchUtil {
             return trophy;
         }
         return null;
-    }
-
-    public static Trophy getTrophy(Trophy trophy, Block block, float yaw) {
-        if (trophy.getCouchRole() == null) {
-            return trophy;
-        }
-        String group = trophy.getCouchGroup();
-
-        CouchRole role = getRole(block, yaw, group);
-
-        if (role == CouchRole.Single) {
-            return trophy;
-        }
-        return trophies.get(new Pair(group, role));
     }
 
     public static CouchRole getRole(Block block, float yaw, String group){
