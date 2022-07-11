@@ -4,19 +4,21 @@ import com.github.kristianvld.angeltrophies.Main;
 import com.github.kristianvld.angeltrophies.trophy.Trophy;
 import com.github.kristianvld.angeltrophies.util.Pair;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.BlockVector;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CouchUtil {
 
     public static final Map<Pair<String, CouchRole>, Trophy> trophies = new HashMap<>();
 
+    /**
+     * Repopulate CouchUtil.trophies with
+     *
+     * @param trophies
+     */
     public static void buildCache(Collection<Trophy> trophies) {
         CouchUtil.trophies.clear();
         Set<String> groups = new HashSet<>();
@@ -64,11 +66,21 @@ public class CouchUtil {
         return new BlockVector(x, 0, z);
     }
 
+    /**
+     * If the entity in an adjacent block has a couch role and a group that matches parameter 3, return that trophy.
+     *
+     * @param block
+     * @param yaw
+     * @param group
+     * @return
+     */
     public static Entity getRelative(Block block, float yaw, String group) {
         BlockVector dir = yawToVector(yaw);
+        // If there is a trophy in the relative position
         Entity trophy = Trophy.getTrophy(block.getRelative(dir.getBlockX(), 0, dir.getBlockZ()));
-        String id = Trophy.getCouchGroupID(trophy);
-        if (group.equals(id)) {
+        String groupId = Trophy.getCouchGroupID(trophy);
+        // If the group of the trophy matches the group we're looking for, return trophy.
+        if (group.equals(groupId)) {
             return trophy;
         }
         return null;
@@ -113,6 +125,10 @@ public class CouchUtil {
             }
         }
         return role;
+    }
+
+    public void recalculateCouchesRecursive(Block block, List<Block> calculated){
+        Entity trophy = get
     }
 
 }

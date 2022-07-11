@@ -173,6 +173,12 @@ public class Trophy {
         return itemName.equals(OraxenItems.getIdByItem(item));
     }
 
+    /**
+     * Returns true if the entity is an ArmorStand that is alive and has an owner in persistentDataContainer.
+     *
+     * @param entity
+     * @return
+     */
     public static boolean isTrophy(Entity entity) {
         return entity instanceof ArmorStand
                 && entity.isValid()
@@ -194,13 +200,6 @@ public class Trophy {
             return trophy;
         }
         return getEntity(trophy, SEAT_KEY);
-    }
-
-    public static Entity getTrophy(Entity seat) {
-        if (isTrophy(seat)) {
-            return seat;
-        }
-        return getEntity(seat, TROPHY_PARENT_KEY);
     }
 
     private static Entity getEntity(Entity seat, NamespacedKey trophyParentKey) {
@@ -226,6 +225,12 @@ public class Trophy {
         return null;
     }
 
+    /**
+     * Given a block, return any trophy entity with a matching blockvector.
+     *
+     * @param block
+     * @return
+     */
     public static Entity getTrophy(Block block) {
         BlockVector bv = block.getLocation().toVector().toBlockVector();
         for (Entity e : block.getChunk().getEntities()) {
@@ -236,6 +241,22 @@ public class Trophy {
         return null;
     }
 
+    /**
+     * TODO: Is this going to break if the entity is orphaned?
+     */
+    /**
+     * If the entity is a trophy, return it. Otherwise, assume it's the seat entity and return its parent.
+     *
+     * @param seat
+     * @return
+     */
+    public static Entity getTrophy(Entity seat) {
+        if (isTrophy(seat)) {
+            return seat;
+        }
+        return getEntity(seat, TROPHY_PARENT_KEY);
+    }
+
     public static CouchRole getCouchRole(Entity trophy) {
         if (isTrophy(trophy) && trophy.getPersistentDataContainer().has(COUCH_ROLE, UUIDTagType.STRING)) {
             return CouchRole.valueOf(trophy.getPersistentDataContainer().get(COUCH_ROLE, UUIDTagType.STRING));
@@ -243,6 +264,9 @@ public class Trophy {
         return null;
     }
 
+    /**
+     * Get couch group from a trophy only if it has a couch role?
+     */
     public static String getCouchGroupID(Entity trophy) {
         if (isTrophy(trophy) && trophy.getPersistentDataContainer().has(COUCH_ROLE, UUIDTagType.STRING)) {
             return trophy.getPersistentDataContainer().get(COUCH_GROUP, UUIDTagType.STRING);
